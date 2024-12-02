@@ -1,0 +1,117 @@
+
+import java.util.ArrayList;
+import java.util.Scanner;
+
+/**Christopher Maksimik
+ * H10CustomApp - Survey Data Analysis Application
+ * This class allows the user to input survey ratings, filters ratings based on a given threshold, 
+ * and displays the filtered results along with the counts of each rating.
+ * 
+ * Author: Christopher Maksimik
+ */
+public class H10CustomApp {
+
+    /**
+     * The main method serves as the entry point for the program. It prompts the user to input
+     * survey ratings, then allows them to specify a threshold rating to filter out lower scores.
+     * The program outputs both the filtered list of ratings and 
+     * the count of each rating in the filtered data.
+     *
+     * @param args command-line arguments (unused)
+     */
+    public static void main(String[] args) {
+        // Create a Scanner instance to capture user input
+        Scanner input = new Scanner(System.in);
+
+        // Collect survey data from the user and store it in an ArrayList
+        ArrayList<Integer> surveyData = readSurveyData(input);
+
+        // Prompt the user for a threshold rating to filter the survey data
+        System.out.print("Enter the minimum rating threshold: ");
+        int threshold = 3; // Default threshold
+        if (input.hasNextInt()) {
+            threshold = input.nextInt(); // Update threshold if user provides input
+        } else {
+            System.out.println("No input provided. Using default threshold value of 3.");
+        }
+
+        // Filter survey data based on the specified threshold
+        ArrayList<Integer> filteredData = filterSurveyData(surveyData, threshold);
+
+        // Count occurrences of each rating in the filtered survey data
+        int[] ratingCounts = countRatings(filteredData);
+
+        // Display the filtered ratings and the count of each rating
+        System.out.println("\nFiltered Survey Ratings: " + filteredData);
+        System.out.println("Rating Counts:");
+        for (int i = 0; i < ratingCounts.length; i++) {
+            System.out.println("Rating " + (i + 1) + ": " + ratingCounts[i]);
+        }
+
+        // Close the Scanner instance to release resources
+        input.close();
+    }
+
+    /**
+     * Prompts the user to enter survey ratings between 1 and 5. Stores valid ratings 
+     * in an ArrayList.
+     * 
+     * @param sc The scanner object to read user input.
+     * @return An ArrayList of integers representing survey ratings.
+     */
+    public static ArrayList<Integer> readSurveyData(Scanner sc) {
+        ArrayList<Integer> surveyData = new ArrayList<>();
+        System.out.println("Enter survey ratings (1-5). Enter -1 to stop:");
+        
+        // Continuously read user input until -1 is entered
+        while (sc.hasNext()) {
+            if (sc.hasNextInt()) {
+                int rating = sc.nextInt();
+                if (rating == -1) {
+                    break; // Stop if the user enters -1
+                } else if (rating >= 1 && rating <= 5) {
+                    surveyData.add(rating); // Add valid ratings to the list
+                }
+            } else {
+                sc.next(); // Consume invalid input to prevent infinite loop
+            }
+        }
+        return surveyData;
+    }
+
+    /**
+     * Filters the survey data to include only ratings that meet or exceed the threshold.
+     * 
+     * @param surveyData The list of survey ratings to filter.
+     * @param threshold The minimum rating threshold.
+     * @return A new list of ratings that meet or exceed the threshold.
+     */
+    public static ArrayList<Integer> filterSurveyData(ArrayList<Integer> surveyData, 
+                                                      int threshold) {
+        ArrayList<Integer> filteredData = new ArrayList<>();
+        
+        // Add ratings to filteredData if they meet the threshold
+        for (int rating : surveyData) {
+            if (rating >= threshold) {
+                filteredData.add(rating);
+            }
+        }
+        return filteredData;
+    }
+
+    /**
+     * Counts the occurrences of each rating (1-5) in the filtered survey data.
+     * 
+     * @param filteredData The filtered list of survey ratings.
+     * @return An array where each index represents the count of ratings.
+     */
+    public static int[] countRatings(ArrayList<Integer> filteredData) {
+        int[] ratingCounts = new int[5]; // Array to store counts for ratings 1 through 5
+        
+        // Increment the count for each rating found in the filtered data
+        for (int rating : filteredData) {
+            ratingCounts[rating - 1]++;
+        }
+        return ratingCounts;
+    }
+}
